@@ -1,0 +1,50 @@
+name: PR Source Code Check
+
+on:
+  - push
+
+jobs:
+  lint:
+    name: Run ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - run: yarn
+      - run: yarn lint:strict
+
+  tsc:
+    name: Run Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - run: yarn
+      - run: yarn typecheck
+
+  prettier:
+    name: Run Prettify Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: creyD/prettier_action@v4.2
+        with:
+          prettier_options: --write .
+          same_commit: true
+
+  test:
+    name: Run Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - run: yarn
+      - run: yarn test
